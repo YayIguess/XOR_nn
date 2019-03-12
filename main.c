@@ -60,7 +60,7 @@ void backprop(void) //aka chain rule time boiz
     int i = 0;
     int j = 0;
 
-    for (int epochs = 0; epochs < 10000; epochs++)
+    for (int epochs = 0; epochs < 500; epochs++)
     {
         input_ptr = train_input;
 
@@ -124,7 +124,7 @@ void backprop(void) //aka chain rule time boiz
 void L1_weight_updater(void)
 {
     for (int i = 0; i < 4; i++)
-        L1_suggested_weight_changes[i] = L1_to_L2_weights[i] - learning_rate * L1_der_err_der_w[i];
+        L1_suggested_weight_changes[i] = L1_to_L2_weights[i]  - learning_rate * L1_der_err_der_w[i];
 }
 
 void L2_weight_updater(void)
@@ -167,10 +167,10 @@ double rand_doubles(const double min, const double max) {
 void fill_hyperparams_with_rand(void) //this works so DON'T TOUCH
 {
     for (int i = 0; i < 4; i++)
-        L1_to_L2_weights[i] = rand_doubles(-0.1, 0.1);
+        L1_to_L2_weights[i] = rand_doubles(-0.5, 0.5);
 
     for (int i = 0; i < 2; i++)
-        L2_to_L3_weights[i] = rand_doubles(-0.1, 0.1);
+        L2_to_L3_weights[i] = rand_doubles(-0.5, 0.5);
 }
 
 int main(void)

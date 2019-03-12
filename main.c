@@ -20,7 +20,7 @@ double sigL3[1]; //space for third layer results
 double L1_to_L2_weights[4]; //input weights
 double L2_to_L3_weights[2]; //weights from first hidden layer (second overall) to next hidden layer
 double *input_ptr = NULL; //pointer to image in input or test array
-double learning_rate = 0.5; //learning rate
+double learning_rate = 0.2; //learning rate
 
 //vars used temporarily during backpropagation
 double L3_der_err_der_y[1]; //output value derivatives
@@ -60,7 +60,7 @@ void backprop(void) //aka chain rule time boiz
     int i = 0;
     int j = 0;
 
-    for (int epochs = 0; epochs < 1000; epochs++)
+    for (int epochs = 0; epochs < 10000; epochs++)
     {
         input_ptr = train_input;
 
@@ -101,11 +101,13 @@ void backprop(void) //aka chain rule time boiz
 
             for (i = 0; i < 4; i++)
             {
+                L1_to_L2_weights[i] = L1_suggested_weight_changes[i];
                 L1_suggested_weight_changes[i] = 0;
                 L1_der_err_der_w[i] = 0;
 
                 if (i < 2)
                 {
+                    L2_to_L3_weights[i] = L2_suggested_weight_changes[i];
                     L2_suggested_weight_changes[i] = 0;
                     L2_der_err_der_y[i] = 0;
                     L2_der_err_der_x[i] = 0;
@@ -122,13 +124,13 @@ void backprop(void) //aka chain rule time boiz
 void L1_weight_updater(void)
 {
     for (int i = 0; i < 4; i++)
-        L1_to_L2_weights[i] = L1_to_L2_weights[i] - learning_rate * L1_der_err_der_w[i];
+        L1_suggested_weight_changes[i] =  - learning_rate * L1_der_err_der_w[i];
 }
 
 void L2_weight_updater(void)
 {
     for (int i = 0; i < 2; i++)
-        L2_to_L3_weights[i] = L2_to_L3_weights[i] - learning_rate * L2_der_err_der_w[i];
+        L2_suggested_weight_changes[i] = L2_to_L3_weights[i] - learning_rate * L2_der_err_der_w[i];
 }
 
 double sigmoid(double x)
@@ -165,10 +167,10 @@ double rand_doubles(const double min, const double max) {
 void fill_hyperparams_with_rand(void) //this works so DON'T TOUCH
 {
     for (int i = 0; i < 4; i++)
-        L1_to_L2_weights[i] = rand_doubles(-5.0, 5.0);
+        L1_to_L2_weights[i] = rand_doubles(-0.1, 0.1);
 
     for (int i = 0; i < 2; i++)
-        L2_to_L3_weights[i] = rand_doubles(-5.0, 5.0);
+        L2_to_L3_weights[i] = rand_doubles(-0.1, 0.1);
 }
 
 int main(void)
@@ -183,3 +185,4 @@ int main(void)
 
     return 0;
 }
+

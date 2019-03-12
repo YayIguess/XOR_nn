@@ -60,7 +60,7 @@ void backprop(void) //aka chain rule time boiz
     int i = 0;
     int j = 0;
 
-    for (int epochs = 0; epochs < 100; epochs++)
+    for (int epochs = 0; epochs < 1000; epochs++)
     {
         input_ptr = train_input;
 
@@ -101,13 +101,11 @@ void backprop(void) //aka chain rule time boiz
 
             for (i = 0; i < 4; i++)
             {
-                L1_to_L2_weights[i] += L1_suggested_weight_changes[i];
                 L1_suggested_weight_changes[i] = 0;
                 L1_der_err_der_w[i] = 0;
 
                 if (i < 2)
                 {
-                    L2_to_L3_weights[i] += L2_suggested_weight_changes[i];
                     L2_suggested_weight_changes[i] = 0;
                     L2_der_err_der_y[i] = 0;
                     L2_der_err_der_x[i] = 0;
@@ -124,13 +122,13 @@ void backprop(void) //aka chain rule time boiz
 void L1_weight_updater(void)
 {
     for (int i = 0; i < 4; i++)
-        L1_suggested_weight_changes[i] = L1_to_L2_weights[i] - learning_rate * L1_der_err_der_w[i];
+        L1_to_L2_weights[i] = L1_to_L2_weights[i] - learning_rate * L1_der_err_der_w[i];
 }
 
 void L2_weight_updater(void)
 {
     for (int i = 0; i < 2; i++)
-        L2_suggested_weight_changes[i] = L2_to_L3_weights[i] - learning_rate * L2_der_err_der_w[i];
+        L2_to_L3_weights[i] = L2_to_L3_weights[i] - learning_rate * L2_der_err_der_w[i];
 }
 
 double sigmoid(double x)
@@ -185,4 +183,3 @@ int main(void)
 
     return 0;
 }
-

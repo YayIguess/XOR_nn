@@ -124,7 +124,7 @@ void backprop(void) //aka chain rule time boiz
 void L1_weight_updater(void)
 {
     for (int i = 0; i < 4; i++)
-        L1_suggested_weight_changes[i] =  - learning_rate * L1_der_err_der_w[i];
+        L1_suggested_weight_changes[i] = L1_to_L2_weights[i] - learning_rate * L1_der_err_der_w[i];
 }
 
 void L2_weight_updater(void)

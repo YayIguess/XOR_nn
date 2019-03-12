@@ -9,9 +9,9 @@
 #define SIZE_OF_TEST 4
 #define SIZE_OF_TRAIN 4
 
-double train_input[8] = {0, 0, 0, 1, 1, 0, 1, 1}; //input is first layer of training (2365*6000
+double train_input[8] = {0, 0, 0, 1, 1, 0, 1, 1}; //input is first layer of training
 double train_answr_key[4] = {0, 1, 1, 0};//storage for train solution
-double test_input[8] = {0, 0, 0, 1, 1, 0, 1, 1}; //input is first layer of test (2365*1000)
+double test_input[8] = {0, 0, 0, 1, 1, 0, 1, 1}; //input is first layer of test
 double test_answr_key[4] = {0, 1, 1, 0}; //storage for test image solution
 double L2[2]; //space for second layer results
 double L3[1]; //space for third layer results

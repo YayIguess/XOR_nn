@@ -82,7 +82,7 @@ void backprop(void) //aka chain rule time boiz
     {
         input_ptr = train_input;
 
-        for (int train_number = 0; train_number < SIZE_OF_TRAIN; train_number++) //60000 training samples
+        for (int train_number = 0; train_number < SIZE_OF_TRAIN; train_number++)
         {
             feed_forward(); //run through the network
 
@@ -116,7 +116,7 @@ void backprop(void) //aka chain rule time boiz
 
             L1_weight_updater();
 
-            input_ptr += 2; //move the pointer to the next image for the training of the next image
+            input_ptr += 2; //move the pointer to the next set
 
             for (i = 0; i < 4; i++)
             {

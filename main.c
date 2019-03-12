@@ -83,7 +83,7 @@ void backprop(void) //aka chain rule time boiz
 
             //derivative of the output of second layer
             for (i = 0; i < SIZE_L2; i++)
-                L2_der_err_der_y[i] = L2_to_L3_weights[i] * sigL2[i];
+                L2_der_err_der_y[i] = L2_to_L3_weights[i] * L3_der_err_der_x[0];
 
             //derivative of the input to the third layer
             for (i = 0; i < SIZE_L2; i++)

@@ -83,7 +83,7 @@ void backprop(void) //aka chain rule time boiz
 
             //derivative of the output of second layer
             for (i = 0; i < SIZE_L2; i++)
-                L2_der_err_der_y[i] += L2_to_L3_weights[i] * L3_der_err_der_x[0];
+                L2_der_err_der_y[i] = L2_to_L3_weights[i] * sigL2[i];
 
             //derivative of the input to the third layer
             for (i = 0; i < SIZE_L2; i++)
@@ -103,13 +103,19 @@ void backprop(void) //aka chain rule time boiz
             {
                 L1_to_L2_weights[i] += L1_suggested_weight_changes[i];
                 L1_suggested_weight_changes[i] = 0;
+                L1_der_err_der_w[i] = 0;
 
                 if (i < 2)
                 {
                     L2_to_L3_weights[i] += L2_suggested_weight_changes[i];
                     L2_suggested_weight_changes[i] = 0;
+                    L2_der_err_der_y[i] = 0;
+                    L2_der_err_der_x[i] = 0;
+                    L2_der_err_der_w[i] = 0;
                 }
             }
+            L3_der_err_der_y[0] = 0;
+            L3_der_err_der_x[0] = 0;
         }
     }
 }
@@ -179,3 +185,4 @@ int main(void)
 
     return 0;
 }
+

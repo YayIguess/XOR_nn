@@ -20,7 +20,7 @@ double sigL3[1]; //space for third layer results
 double L1_to_L2_weights[4]; //input weights
 double L2_to_L3_weights[2]; //weights from first hidden layer (second overall) to next hidden layer
 double *input_ptr = NULL; //pointer to image in input or test array
-double learning_rate = 0.5; //learning rate
+double learning_rate = 0.8; //learning rate
 
 //vars used temporarily during backpropagation
 double L3_der_err_der_y[1]; //output value derivatives
@@ -50,7 +50,8 @@ void test(void);
 
 void reset_nn(void);
 
-void test(void) {
+void test(void)
+{
     input_ptr = test_input;
 
     for (int i = 0; i < SIZE_OF_TEST; i++)
@@ -150,17 +151,20 @@ void backprop(void) //aka chain rule time boiz
 }
 
 
-void L1_weight_updater(void) {
+void L1_weight_updater(void)
+{
     for (int i = 0; i < 4; i++)
         L1_suggested_weight_changes[i] += -1 * learning_rate * L1_der_err_der_w[i];
 }
 
-void L2_weight_updater(void) {
+void L2_weight_updater(void)
+{
     for (int i = 0; i < 2; i++)
         L2_suggested_weight_changes[i] += -1 * learning_rate * L2_der_err_der_w[i];
 }
 
-double sigmoid(double x) {
+double sigmoid(double x)
+{
     return 1 / (1 + exp(-1.0 * x));
 }
 
@@ -182,7 +186,8 @@ void feed_forward(void) //holy crap I'm 99% sure this function worked first try
     sigL3[0] = sigmoid(L3[0]);
 }
 
-double rand_doubles(const double min, const double max) {
+double rand_doubles(const double min, const double max)
+{
     if (min < max)
         return (max - min) * ((double) rand() / RAND_MAX) + min;
 
@@ -199,7 +204,8 @@ void fill_hyperparams_with_rand(void) //this works so DON'T TOUCH
         L2_to_L3_weights[i] = rand_doubles(-0.5, 0.5);
 }
 
-int main(void) {
+int main(void)
+{
     //randomizer
     srand((unsigned) 0); //seed with 0 for consistency
     fill_hyperparams_with_rand();
@@ -210,4 +216,3 @@ int main(void) {
 
     return 0;
 }
-

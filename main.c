@@ -20,7 +20,7 @@ double sigL3[1]; //space for third layer results
 double L1_to_L2_weights[4]; //input weights
 double L2_to_L3_weights[2]; //weights from first hidden layer (second overall) to next hidden layer
 double *input_ptr = NULL; //pointer to image in input or test array
-double learning_rate = 0.2; //learning rate
+double learning_rate = 0.5; //learning rate
 
 //vars used temporarily during backpropagation
 double L3_der_err_der_y[1]; //output value derivatives
@@ -33,34 +33,51 @@ double L1_der_err_der_w[4]; //derivatives of the weights from L1 to L2
 double L1_suggested_weight_changes[4];
 
 double rand_doubles(double min, double max);
+
 void fill_hyperparams_with_rand(void);
+
 void L1_weight_updater(void);
+
 void L2_weight_updater(void);
+
 void feed_forward(void);
+
 double sigmoid(double x);
+
 void backprop(void);
+
 void test(void);
 
+void reset_nn(void);
 
-void test(void)
-{
+void test(void) {
     input_ptr = test_input;
 
     for (int i = 0; i < SIZE_OF_TEST; i++)
     {
         feed_forward();
         printf("%lf %lf\n", sigL3[0], test_answr_key[i]);
+        reset_nn();
+        input_ptr += 2;
     }
-    input_ptr += 2;
 }
 
+void reset_nn(void) //reset_neurons
+{
+    for(int i = 0; i < 4; i++)
+    {
+        if(i < 2)
+            L2[i] = 0;
+    }
+    L3[0] = 0;
+}
 
 void backprop(void) //aka chain rule time boiz
 {
     int i = 0;
     int j = 0;
 
-    for (int epochs = 0; epochs < 500; epochs++)
+    for (int epochs = 0; epochs < 500000; epochs++)
     {
         input_ptr = train_input;
 
@@ -72,7 +89,8 @@ void backprop(void) //aka chain rule time boiz
             L3_der_err_der_y[0] = sigL3[0] - train_answr_key[train_number];
 
             //find derivatives of the input to the final layer
-            L3_der_err_der_x[0] = (sigL3[0] * (1 - sigL3[0])) * L3_der_err_der_y[0]; //sigL3[0]*(1-sigL3[0])) is derivative of the sigmoid
+            L3_der_err_der_x[0] = (sigL3[0] * (1 - sigL3[0])) *
+                                  L3_der_err_der_y[0]; //sigL3[0]*(1-sigL3[0])) is derivative of the sigmoid
 
 
             //derivative of weights from L2 to L3
@@ -101,14 +119,11 @@ void backprop(void) //aka chain rule time boiz
 
             for (i = 0; i < 4; i++)
             {
-                L1_to_L2_weights[i] = L1_suggested_weight_changes[i];
-                L1_suggested_weight_changes[i] = 0;
+
                 L1_der_err_der_w[i] = 0;
 
                 if (i < 2)
                 {
-                    L2_to_L3_weights[i] = L2_suggested_weight_changes[i];
-                    L2_suggested_weight_changes[i] = 0;
                     L2_der_err_der_y[i] = 0;
                     L2_der_err_der_x[i] = 0;
                     L2_der_err_der_w[i] = 0;
@@ -116,25 +131,36 @@ void backprop(void) //aka chain rule time boiz
             }
             L3_der_err_der_y[0] = 0;
             L3_der_err_der_x[0] = 0;
+
+            reset_nn();
+        }
+
+        for (i = 0; i < 4; i++)
+        {
+            L1_to_L2_weights[i] += L1_suggested_weight_changes[i];
+            L1_suggested_weight_changes[i] = 0;
+
+            if (i < 2)
+            {
+                L2_to_L3_weights[i] += L2_suggested_weight_changes[i];
+                L2_suggested_weight_changes[i] = 0;
+            }
         }
     }
 }
 
 
-void L1_weight_updater(void)
-{
+void L1_weight_updater(void) {
     for (int i = 0; i < 4; i++)
-        L1_suggested_weight_changes[i] = L1_to_L2_weights[i]  - learning_rate * L1_der_err_der_w[i];
+        L1_suggested_weight_changes[i] += -1 * learning_rate * L1_der_err_der_w[i];
 }
 
-void L2_weight_updater(void)
-{
+void L2_weight_updater(void) {
     for (int i = 0; i < 2; i++)
-        L2_suggested_weight_changes[i] = L2_to_L3_weights[i] - learning_rate * L2_der_err_der_w[i];
+        L2_suggested_weight_changes[i] += -1 * learning_rate * L2_der_err_der_w[i];
 }
 
-double sigmoid(double x)
-{
+double sigmoid(double x) {
     return 1 / (1 + exp(-1.0 * x));
 }
 
@@ -145,7 +171,7 @@ void feed_forward(void) //holy crap I'm 99% sure this function worked first try
     for (i = 0; i < SIZE_L1; i++)
     {
         for (j = 0; j < SIZE_L2; j++)
-            L2[i] += L1_to_L2_weights[(i * 2) + j] * input_ptr[i];
+            L2[i] += L1_to_L2_weights[(j * 2) + i] * input_ptr[j];
 
         sigL2[i] = sigmoid(L2[i]);
     }
@@ -173,8 +199,7 @@ void fill_hyperparams_with_rand(void) //this works so DON'T TOUCH
         L2_to_L3_weights[i] = rand_doubles(-0.5, 0.5);
 }
 
-int main(void)
-{
+int main(void) {
     //randomizer
     srand((unsigned) 0); //seed with 0 for consistency
     fill_hyperparams_with_rand();

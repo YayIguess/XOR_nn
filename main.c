@@ -8,6 +8,8 @@
 #define SIZE_L2 2
 #define SIZE_OF_TEST 4
 #define SIZE_OF_TRAIN 4
+#define L1_WEIGHTS 4
+#define L2_WEIGHTS 2
 
 double train_input[8] = {0, 0, 0, 1, 1, 0, 1, 1}; //input is first layer of training
 double train_answr_key[4] = {0, 1, 1, 0};//storage for train solution
@@ -65,9 +67,9 @@ void test(void)
 
 void reset_nn(void) //reset_neurons
 {
-    for(int i = 0; i < 4; i++)
+    for(int i = 0; i < L1_WEIGHTS; i++)
     {
-        if(i < 2)
+        if(i < L2_WEIGHTS)
             L2[i] = 0;
     }
     L3[0] = 0;
@@ -78,7 +80,7 @@ void backprop(void) //aka chain rule time boiz
     int i = 0;
     int j = 0;
 
-    for (int epochs = 0; epochs < 500000; epochs++)
+    for (int epochs = 0; epochs < 1000000; epochs++)
     {
         input_ptr = train_input;
 
@@ -118,12 +120,12 @@ void backprop(void) //aka chain rule time boiz
 
             input_ptr += 2; //move the pointer to the next set
 
-            for (i = 0; i < 4; i++)
+            for (i = 0; i < L1_WEIGHTS; i++)
             {
 
                 L1_der_err_der_w[i] = 0;
 
-                if (i < 2)
+                if (i < L2_WEIGHTS)
                 {
                     L2_der_err_der_y[i] = 0;
                     L2_der_err_der_x[i] = 0;
@@ -136,12 +138,12 @@ void backprop(void) //aka chain rule time boiz
             reset_nn();
         }
 
-        for (i = 0; i < 4; i++)
+        for (i = 0; i < L1_WEIGHTS; i++)
         {
             L1_to_L2_weights[i] += L1_suggested_weight_changes[i];
             L1_suggested_weight_changes[i] = 0;
 
-            if (i < 2)
+            if (i < L2_WEIGHTS)
             {
                 L2_to_L3_weights[i] += L2_suggested_weight_changes[i];
                 L2_suggested_weight_changes[i] = 0;
@@ -153,13 +155,13 @@ void backprop(void) //aka chain rule time boiz
 
 void L1_weight_updater(void)
 {
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < L1_WEIGHTS; i++)
         L1_suggested_weight_changes[i] += -1 * learning_rate * L1_der_err_der_w[i];
 }
 
 void L2_weight_updater(void)
 {
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < L2_WEIGHTS; i++)
         L2_suggested_weight_changes[i] += -1 * learning_rate * L2_der_err_der_w[i];
 }
 
@@ -172,6 +174,7 @@ void feed_forward(void) //holy crap I'm 99% sure this function worked first try
 {
     int i = 0;
     int j = 0;
+
     for (i = 0; i < SIZE_L1; i++)
     {
         for (j = 0; j < SIZE_L2; j++)
@@ -197,10 +200,10 @@ double rand_doubles(const double min, const double max)
 
 void fill_hyperparams_with_rand(void) //this works so DON'T TOUCH
 {
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < L1_WEIGHTS; i++)
         L1_to_L2_weights[i] = rand_doubles(-0.5, 0.5);
 
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < L2_WEIGHTS; i++)
         L2_to_L3_weights[i] = rand_doubles(-0.5, 0.5);
 }
 
@@ -213,6 +216,17 @@ int main(void)
     backprop();
 
     test();
+
+    putchar('\n');
+    for(int i = 0; i < L1_WEIGHTS; i++)
+    {
+        printf("%lf\n", L1_to_L2_weights[i]);
+    }
+    putchar('\n');
+    for(int i = 0; i < L2_WEIGHTS; i++)
+    {
+        printf("%lf\n", L2_to_L3_weights[i]);
+    }
 
     return 0;
 }

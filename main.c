@@ -21,7 +21,7 @@ double sigL2[2]; //space for second layer results
 double sigL3[1]; //space for third layer results
 double L1_to_L2_weights[4]; //input weights
 double L2_to_L3_weights[2]; //weights from first hidden layer (second overall) to next hidden layer
-double *input_ptr = NULL; //pointer to image in input or test array
+double *input_ptr = NULL; //pointer to set in input or test array
 double learning_rate = 0.8; //learning rate
 
 //vars used temporarily during backpropagation

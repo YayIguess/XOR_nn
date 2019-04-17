@@ -35,21 +35,13 @@ double L1_der_err_der_w[4]; //derivatives of the weights from L1 to L2
 double L1_suggested_weight_changes[4];
 
 double rand_doubles(double min, double max);
-
 void fill_hyperparams_with_rand(void);
-
 void L1_weight_updater(void);
-
 void L2_weight_updater(void);
-
 void feed_forward(void);
-
 double sigmoid(double x);
-
 void backprop(void);
-
 void test(void);
-
 void reset_nn(void);
 
 void test(void)

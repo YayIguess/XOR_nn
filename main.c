@@ -162,7 +162,7 @@ double sigmoid(double x)
     return 1 / (1 + exp(-1.0 * x));
 }
 
-void feed_forward(void) //holy crap I'm 99% sure this function worked first try
+void feed_forward(void) //matrix multiplication
 {
     int i = 0;
     int j = 0;

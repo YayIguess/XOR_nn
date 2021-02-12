@@ -11,6 +11,7 @@
 #define L1_WEIGHTS 4
 #define L2_WEIGHTS 2
 
+//TODO make this a struct or move to c++ and make it a class
 double train_input[8] = {0, 0, 0, 1, 1, 0, 1, 1}; //input is first layer of training
 double train_answr_key[4] = {0, 1, 1, 0};//storage for train solution
 double test_input[8] = {0, 0, 0, 1, 1, 0, 1, 1}; //input is first layer of test
